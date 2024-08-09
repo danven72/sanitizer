@@ -1,15 +1,21 @@
 package it.bitrock.sanitizer.controller;
 
 import it.bitrock.sanitizer.dto.AppointmentDTO;
+import it.bitrock.sanitizer.dto.FilterType;
 import it.bitrock.sanitizer.validator.annotation.NoHtml;
+import it.bitrock.sanitizer.validator.annotation.StringEnumeration;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/appointment")
@@ -33,6 +39,22 @@ public class AppointmentController {
 
         return new AppointmentDTO("3456tyuioe", "Bianchi", "Avorio");
     }
+
+    @GetMapping("search")
+    public List<AppointmentDTO> findByFilter(@RequestParam @NotNull @StringEnumeration(enumClass = FilterType.class) String filter) {
+        System.out.println("Filter: " + filter);
+        return List.of(new AppointmentDTO("3456tyuioe", "Bianchi", "Avorio"),
+                new AppointmentDTO("2222tyuioe", "Verdi", "Avorio"),
+        new AppointmentDTO("3333tyuioe", "Rossi", "Avorio"),
+        new AppointmentDTO("3444tyuioe", "Giallini", "Avorio"));
+    }
+
+    @GetMapping("parameter")
+    public AppointmentDTO findByParamRequest(@RequestParam @NotNull @NoHtml String param) {
+        System.out.println("Param: " + param);
+        return new AppointmentDTO("3444tyuioe", "Giallini", "Avorio");
+    }
+
 
     @PostMapping
     public String create(@RequestBody  @Valid AppointmentDTO appointmentDTO) {
